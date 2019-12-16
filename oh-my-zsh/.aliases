@@ -150,8 +150,8 @@ alias path='echo -e ${PATH//:/\\n}'
 o() {
     if [ -n "$1" ] # or old, if [ "$1" != "" ]
     then
-        subl "$1"
+        /Applications/Sublime Text.app/Contents/SharedSupport/bin/subl "$1"
     else
-        subl .
+        /Applications/Sublime Text.app/Contents/SharedSupport/bin/subl .
     fi
 }
