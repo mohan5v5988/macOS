@@ -1,0 +1,116 @@
+#! /usr/bin/env bash
+
+# This install or updates homebrew before installing all the dependencies specified in the Brewfile.
+# Keep in mind the homebrew does not keep track of versions so only the latest version is installed.
+
+CURDIR=$(pwd)
+ZSHRC_PATH="${HOME}/.zshrc"
+
+install_nvm() {
+    local nvmVer
+    nvmVer="${1}"
+
+    curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v${nvmVer}/install.sh" | bash
+
+    source "${ZSHRC_PATH}"
+
+    # Backstage requires Node 14 currently
+    nvm install 14
+}
+
+install_brew_dependencies() {
+    if ! which -s brew; then
+        echo "Installing homebrew ..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    else
+        echo "Looks like you already have homebrew. Updating ..."
+        brew update
+    fi
+
+    echo "Installing development dependencies ..."
+
+    if [[ ! -f "${CURDIR}/Brewfile" ]]; then
+        cp "${CURDIR}/Brewfile.template" "${CURDIR}/Brewfile"
+    fi
+
+    brew tap hashicorp/tap
+    brew bundle
+}
+
+install_ohmyzsh() {
+    if [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+}
+
+initialize_jenv() {
+    # Initialize JENV
+    grep -qxf 'export PATH="$HOME/.jenv/bin:$PATH"' "${ZSHRC_PATH}" || echo 'export PATH="$HOME/.jenv/bin:$PATH"' >>"${ZSHRC_PATH}"
+    grep -qxf 'eval "$(jenv init -)"' || echo 'eval "$(jenv init -)"' >>"${ZSHRC_PATH}"
+    jenv add $(/usr/libexec/java_home)
+}
+
+install_plugin() {
+    if [[ -d "${HOME}/.oh-my-zsh" ]]; then
+        cp -R "${CURDIR}/zsh/plugins/local" "${HOME}/.oh-my-zsh/custom/plugins/"
+
+        echo "Add \"local\" to your plugins in your ${ZSHRC_PATH}"
+    else
+        echo "Oh My Zsh must be installed first"
+    fi
+}
+
+usage() {
+    echo "setup command [OPTIONS]"
+    echo -e "\nCommands:"
+    echo "    init:      Installs the base depedencies"
+    echo "    plugin:    Installs the local oh-my-zsh plugin"
+    echo "    complete:  Installs all of the above"
+    echo "    defaults:  Displays the current default values"
+    echo -e "\nOptions:"
+    echo "   nvm:        The version of NVM to install"
+}
+
+init() {
+    install_brew_dependencies
+    #install_ohmyzsh
+    #initialize_jenv
+    #install_nvm "${1}"
+
+    # Launch Docker for minikube
+    open /Applications/Docker.app
+}
+
+source "${CURDIR}/defaults.sh"
+
+SETUPCMD="${1}"
+
+if [[ "${SETUPCMD}" != "defaults" ]]; then
+    while [ $# -gt 0 ]; do
+        if [[ $1 == *"--"* ]]; then
+            param="${1/--/}"
+            declare $param="$2"
+        fi
+
+        shift
+    done
+fi
+
+case "${SETUPCMD}" in
+defaults)
+    echo "NVM Version:   ${nvm}"
+    ;;
+init)
+    init "${nvm}"
+    ;;
+plugin)
+    install_plugin
+    ;;
+complete | all)
+    init "${nvm}"
+    install_plugin
+    ;;
+*)
+    usage
+    ;;
+esac
