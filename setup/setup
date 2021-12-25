@@ -66,11 +66,27 @@ install_zsh-autosuggestions() {
     fi
 }
 
+install_themes() {
+    if [[ -d "${HOME}/.oh-my-zsh" ]]; then
+        cp -R "${CURDIR}/zsh/themes/" "${HOME}/.oh-my-zsh/custom/themes/"
+
+        echo "You can change the theam in your ${ZSHRC_PATH}"
+    else
+        echo "Oh My Zsh must be installed first"
+    fi
+}
+
+custom_zsh() {
+    install_plugin
+    install_zsh-autosuggestions
+    install_themes 
+}
+
 usage() {
     echo "setup command [OPTIONS]"
     echo -e "\nCommands:"
     echo "    init:      Installs the base depedencies"
-    echo "    plugin:    Installs the local oh-my-zsh plugin"
+    echo "    custom:    Installs the custom oh-my-zsh"
     echo "    complete:  Installs all of the above"
     echo "    defaults:  Displays the current default values"
 }
@@ -104,14 +120,12 @@ defaults)
 init)
     init
     ;;
-plugin)
-    install_plugin
-    install_zsh-autosuggestions
+custom)
+    custom_zsh
     ;;
 complete | all)
     init
-    install_plugin
-    install_zsh-autosuggestions
+    custom_zsh
     ;;
 *)
     usage
