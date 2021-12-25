@@ -76,10 +76,22 @@ install_themes() {
     fi
 }
 
+install_fonts() {
+    # clone
+    git clone https://github.com/powerline/fonts.git --depth=1
+    # install
+    cd fonts
+    ./install.sh
+    # clean-up a bit
+    cd ..
+    rm -rf fonts
+}
+
 custom_zsh() {
     install_plugin
     install_zsh-autosuggestions
-    install_themes 
+    install_themes
+    install_fonts
 }
 
 usage() {
