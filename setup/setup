@@ -5,18 +5,7 @@
 
 CURDIR=$(pwd)
 ZSHRC_PATH="${HOME}/.zshrc"
-
-install_nvm() {
-    local nvmVer
-    nvmVer="${1}"
-
-    curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v${nvmVer}/install.sh" | bash
-
-    source "${ZSHRC_PATH}"
-
-    # Backstage requires Node 14 currently
-    nvm install 14
-}
+LOCAL_ENV="${HOME}/.local.env"
 
 install_brew_dependencies() {
     if ! which -s brew; then
@@ -43,10 +32,17 @@ install_ohmyzsh() {
     fi
 }
 
+install_localenv_file() {
+    if [[ ! -f "${LOCAL_ENV}" ]]; then
+        touch ${LOCAL_ENV}
+    fi
+}
+
 initialize_jenv() {
+    install_localenv_file
     # Initialize JENV
-    grep -qxf 'export PATH="$HOME/.jenv/bin:$PATH"' "${ZSHRC_PATH}" || echo 'export PATH="$HOME/.jenv/bin:$PATH"' >>"${ZSHRC_PATH}"
-    grep -qxf 'eval "$(jenv init -)"' || echo 'eval "$(jenv init -)"' >>"${ZSHRC_PATH}"
+    grep -qxf 'export PATH="$HOME/.jenv/bin:$PATH"' "${LOCAL_ENV}" || echo 'export PATH="$HOME/.jenv/bin:$PATH"' >>"${LOCAL_ENV}"
+    grep -qxf 'eval "$(jenv init -)"' || echo 'eval "$(jenv init -)"' >>"${LOCAL_ENV}"
     jenv add $(/usr/libexec/java_home)
 }
 
@@ -60,6 +56,16 @@ install_plugin() {
     fi
 }
 
+install_zsh-autosuggestions() {
+    if [[ -d "${HOME}/.oh-my-zsh" ]]; then
+        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-${HOME}/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+        echo "Add \"zsh-autosuggestions\" to your plugins in your ${ZSHRC_PATH}"
+    else
+        echo "Oh My Zsh must be installed first"
+    fi
+}
+
 usage() {
     echo "setup command [OPTIONS]"
     echo -e "\nCommands:"
@@ -67,21 +73,16 @@ usage() {
     echo "    plugin:    Installs the local oh-my-zsh plugin"
     echo "    complete:  Installs all of the above"
     echo "    defaults:  Displays the current default values"
-    echo -e "\nOptions:"
-    echo "   nvm:        The version of NVM to install"
 }
 
 init() {
+    install_ohmyzsh
     install_brew_dependencies
-    #install_ohmyzsh
-    #initialize_jenv
-    #install_nvm "${1}"
-
+    initialize_jenv
+    
     # Launch Docker for minikube
     open /Applications/Docker.app
 }
-
-source "${CURDIR}/defaults.sh"
 
 SETUPCMD="${1}"
 
@@ -101,14 +102,16 @@ defaults)
     echo "NVM Version:   ${nvm}"
     ;;
 init)
-    init "${nvm}"
+    init
     ;;
 plugin)
     install_plugin
+    install_zsh-autosuggestions
     ;;
 complete | all)
-    init "${nvm}"
+    init
     install_plugin
+    install_zsh-autosuggestions
     ;;
 *)
     usage
