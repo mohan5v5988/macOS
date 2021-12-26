@@ -11,6 +11,7 @@ brew 'git'
 brew 'postgresql'
 brew 'maven'
 
+cask 'adoptopenjdk11'
 cask 'intellij-idea-ce'
 cask 'keystore-explorer'
 cask 'alfred'
