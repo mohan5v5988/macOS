@@ -22,6 +22,7 @@ install_brew_dependencies() {
         cp "${CURDIR}/Brewfile.template" "${CURDIR}/Brewfile"
     fi
 
+    brew tap adoptopenjdk/openjdk
     brew tap hashicorp/tap
     brew bundle
 }
