@@ -3,6 +3,7 @@ cask "docker"
 brew "awscli"
 brew "docker"
 brew "docker-compose"
+brew "figlet"
 brew "python3"
 brew 'git'
 brew 'jenv'
