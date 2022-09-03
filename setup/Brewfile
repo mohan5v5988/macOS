@@ -4,27 +4,32 @@ brew "awscli"
 brew "docker"
 brew "docker-compose"
 brew "python3"
-brew 'jq'
-brew 'jenv'
-brew 'nvm'
 brew 'git'
-brew 'postgresql'
+brew 'jenv'
+brew 'jq'
 brew 'maven'
+brew 'nvm'
+brew 'postgresql'
 
-cask 'adoptopenjdk11'
-cask 'intellij-idea-ce'
-cask 'keystore-explorer'
-cask 'alfred'
 cask 'AppCleaner'
+cask 'adoptopenjdk11'
+cask 'alfred'
+cask 'balenaetcher'
 cask 'CheatSheet'
 cask 'Firefox'
 cask 'google-chrome'
+cask 'intellij-idea-ce'
+cask 'keystore-explorer'
+cask 'ledger-live'
 cask 'LastPass'
 cask 'megasync'
 cask 'microsoft-office'
 cask 'Postman'
 cask 'ProtonVPN'
+cask 'pgadmin4'
 cask 'Spectacle'
+cask 'slack'
+cask 'spectacle'
 cask 'sublime-text'
 cask 'Todoist'
 cask 'Vanilla'
@@ -37,10 +42,10 @@ cask 'vlc'
 
 
 
-
 #Amphetamine
 #Be Focused
 #Encrypto
 #Helium
 #Keka
 #LensOCR
+#WireGuard
