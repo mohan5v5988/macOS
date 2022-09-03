@@ -27,12 +27,6 @@ install_brew_dependencies() {
     brew bundle
 }
 
-install_ohmyzsh() {
-    if [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
-        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    fi
-}
-
 install_localenv_file() {
     if [[ ! -f "${LOCAL_ENV}" ]]; then
         touch ${LOCAL_ENV}
@@ -47,7 +41,13 @@ initialize_jenv() {
     jenv add $(/usr/libexec/java_home)
 }
 
-install_plugin() {
+install_ohmyzsh() {
+    if [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+}
+
+install_custom_plugin() {
     if [[ -d "${HOME}/.oh-my-zsh" ]]; then
         cp -R "${CURDIR}/zsh/plugins/local" "${HOME}/.oh-my-zsh/custom/plugins/"
 
@@ -67,7 +67,7 @@ install_zsh-autosuggestions() {
     fi
 }
 
-install_themes() {
+install_custom_themes() {
     if [[ -d "${HOME}/.oh-my-zsh" ]]; then
         cp -R "${CURDIR}/zsh/themes/" "${HOME}/.oh-my-zsh/custom/themes/"
 
@@ -77,7 +77,7 @@ install_themes() {
     fi
 }
 
-install_fonts() {
+install_custom_fonts() {
     # clone
     git clone https://github.com/powerline/fonts.git --depth=1
     # install
@@ -88,29 +88,32 @@ install_fonts() {
     rm -rf fonts
 }
 
+copy_zshrc_file() {
+    cp -R "${CURDIR}/zsh/.zshrc" "${HOME}"
+}
+
 custom_zsh() {
-    install_plugin
+    install_ohmyzsh
+    install_custom_plugin
     install_zsh-autosuggestions
-    install_themes
-    install_fonts
+    install_custom_themes
+    install_custom_fonts
+    copy_zshrc_file
 }
 
 usage() {
     echo "setup command [OPTIONS]"
     echo -e "\nCommands:"
-    echo "    init:      Installs the base depedencies"
-    echo "    custom:    Installs the custom oh-my-zsh"
-    echo "    complete:  Installs all of the above"
+    echo "    b:      Installs the brew depedencies"
+    echo "    zsh:    Installs the oh-my-zsh"
+    echo "    czsh:   Installs the custom oh-my-zsh"
+    echo "    all:    Installs all of the above"
     echo "    defaults:  Displays the current default values"
 }
 
-init() {
-    install_ohmyzsh
+install_brew() {
     install_brew_dependencies
     initialize_jenv
-    
-    # Launch Docker for minikube
-    open /Applications/Docker.app
 }
 
 SETUPCMD="${1}"
@@ -130,14 +133,18 @@ case "${SETUPCMD}" in
 defaults)
     echo "NVM Version:   ${nvm}"
     ;;
-init)
-    init
+b)
+    install_brew
     ;;
-custom)
+zsh)
+    install_ohmyzsh
+    ;;
+czsh)
     custom_zsh
     ;;
-complete | all)
-    init
+com | all)
+    install_brew
+    install_ohmyzsh
     custom_zsh
     ;;
 *)
