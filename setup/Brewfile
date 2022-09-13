@@ -26,6 +26,7 @@ cask 'ledger-live'
 cask 'LastPass'
 cask 'megasync'
 cask 'microsoft-office'
+cask 'ngrok' // for public url to localhost
 cask 'Postman'
 cask 'ProtonVPN'
 cask 'pgadmin4'
