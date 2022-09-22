@@ -11,6 +11,7 @@ brew 'jq'
 brew 'maven'
 brew 'nvm'
 brew 'postgresql'
+brew 'tldr'
 
 cask 'AppCleaner'
 cask 'adoptopenjdk11'
