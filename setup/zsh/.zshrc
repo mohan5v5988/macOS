@@ -69,12 +69,12 @@ ZSH_THEME="localagnoster"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    git
-    docker
     aws
+    docker
     extract
+    git
+    kubectl
     local
-    mvn
     sublime
     sudo
     zsh-autosuggestions
