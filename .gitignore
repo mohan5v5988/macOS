@@ -1,1 +1,10 @@
 .DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+
+.dccache
+**/.dccache
+
+
+*.log
