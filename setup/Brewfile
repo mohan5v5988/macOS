@@ -43,9 +43,15 @@ cask 'veracrypt'
 cask 'visual-studio-code'
 cask 'vlc'
 
-
-
-
+# check for brew
+# Discord
+# Joplin
+# Burp Suite
+# Wireshark
+# balenaetcher
+# Bitwarden
+# Lastpass
+# 
 
 
 #Amphetamine
